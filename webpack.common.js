@@ -1,4 +1,5 @@
 const path = require('path');
+const { ModuleFederationPlugin } = require('webpack').container;
 
 module.exports = {
   mode: 'development',
@@ -37,10 +38,20 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.js']
   },
   output: {
     filename: 'app.js',
     path: path.resolve(__dirname, 'build', 'js'),
   },
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'electron',
+      filename: 'remoteEntry.js',
+      remotes: {
+        // kraken: 'reactapp@' + process.env.REACT_APP_URL + '/remoteEntry.js'
+        kraken: 'kraken@http://localhost:3001/remoteEntry.js'
+      }
+    })
+  ]
 };
